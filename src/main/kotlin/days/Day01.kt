@@ -1,4 +1,6 @@
-import java.io.File
+package days
+
+import util.FileUtil.getInput
 
 fun main() {
     Day01().run()
@@ -6,7 +8,7 @@ fun main() {
 
 class Day01: Day {
     override fun run() {
-        val input = File("src/main/kotlin/Day01.txt").readLines()
+        val input = getInput("Day01.txt")
         val measurements = input
             .map { it.trim() }
             .map { it.toInt() }
