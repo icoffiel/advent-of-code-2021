@@ -1,15 +1,32 @@
+import java.io.File
+
+fun main() {
+    Day01().run()
+}
+
 class Day01: Day {
     override fun run() {
+        val input = File("src/main/kotlin/Day01.txt").readLines()
+        val measurements = input
+            .map { it.trim() }
+            .map { it.toInt() }
+
         println("Results for Day One:")
-        println(partOne())
-        println(partTwo())
+        println("Part One: ${partOne(measurements)}")
+        println("Part Two: ${partTwo(measurements)}")
     }
 
-    fun partOne(): String {
-        return "part one"
+    private fun partOne(measurements: List<Int>): Int {
+        return measurements
+            .zipWithNext { first, second -> if (first < second) 1 else 0 }
+            .sum()
     }
 
-    fun partTwo(): String {
-        return "part two"
+    private fun partTwo(measurements: List<Int>): Int {
+        return measurements
+            .windowed(3)
+            .map { it.sum() }
+            .zipWithNext { first, second -> if (first < second) 1 else 0 }
+            .sum()
     }
 }
