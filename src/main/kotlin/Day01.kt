@@ -24,8 +24,7 @@ class Day01: Day {
 
     private fun partTwo(measurements: List<Int>): Int {
         return measurements
-            .windowed(3)
-            .map { it.sum() }
+            .windowed(3) { it.sum() }
             .zipWithNext { first, second -> if (first < second) 1 else 0 }
             .sum()
     }
