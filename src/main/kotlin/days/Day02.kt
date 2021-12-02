@@ -14,7 +14,7 @@ class Day02: Day {
             .map { it.split(" ") }
             .map { (command, value) -> Command(DIRECTION.valueOf(command.uppercase()), value.toInt()) }
 
-        println("Results for Day One:")
+        println("Results for Day Two:")
         println("Part One: ${partOne(commands)}")
         println("Part Two: ${partTwo(commands)}")
     }
