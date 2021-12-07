@@ -1,5 +1,4 @@
-import days.Day01
-import days.Day02
+import days.*
 
 fun main() {
     println("Welcome to Advent of Code 2021!")
@@ -8,6 +7,11 @@ fun main() {
     val days = listOf(
         Day01(),
         Day02(),
+        Day03(),
+        Day04(),
+        Day05(),
+        Day06(),
+        Day07(),
     )
 
     days.forEach {
