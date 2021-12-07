@@ -11,69 +11,33 @@ class Day06 : Day {
         val input = getInputString("Day06.txt")
         val sanitizedInput = input.trim()
 
-        val initState = sanitizedInput.split(",")
+        val initState = sanitizedInput.split(",").map { it.toInt() }
 
-        println("Results for Day Five:")
+        println("Results for Day Six:")
         println("Part One: ${partOne(initState)}")
         println("Part Two: ${partTwo(initState)}")
     }
 
-    private fun partOne(initState: List<String>): Int {
-        val initialLaternFish = initState
-            .map { Lanternfish(it.toInt()) }
-
-        println("Initial State: $initialLaternFish")
-
-        val result = (0..79)
-            .fold(initialLaternFish) { prev, i ->
-                val newState = calculateNewState(prev)
-                println("After ${i + 1} day(s): ${newState.map { it.timer }.joinToString(",")}")
-
-                newState
-            }
-
-        return result.size
+    private fun partOne(initState: List<Int>): Long {
+        return calculateNumberOfFish(initState, 80)
     }
 
-    private fun partTwo(initState: List<String>): Int {
-        val initialLaternFish = initState
-            .map { Lanternfish(it.toInt()) }
-
-        println("Initial State: $initialLaternFish")
-
-        val result = (0..255)
-            .fold(initialLaternFish) { prev, i ->
-                val newState = calculateNewState(prev)
-//                println("After ${i + 1} day(s): ${newState.map { it.timer }.joinToString(",")}")
-
-                newState
-            }
-
-        return result.size
+    private fun partTwo(initState: List<Int>): Long {
+        return calculateNumberOfFish(initState, 256)
     }
 }
 
-fun calculateNewState(currentState: List<Lanternfish>): List<Lanternfish> {
+private fun calculateNumberOfFish(initState: List<Int>, days: Int): Long {
+    val fish = MutableList(9) { 0L }
+    initState.forEach { fish[it]++ }
 
-    val updatedCurrentFish = currentState
-        .map { it.tick() }
+    repeat(days) {
+        val fishToSpawn = fish[0]
 
-    val newFishNeeded = updatedCurrentFish.count { it.timer == 6 && !it.new }
-
-    val newFish = if (newFishNeeded > 0) {
-        (0 until newFishNeeded)
-            .map { Lanternfish(new = true) }
-    } else {
-        listOf()
+        (1..8).forEach { fish[it -1] = fish[it] }
+        fish[6] += fishToSpawn
+        fish[8] = fishToSpawn
     }
 
-    return updatedCurrentFish + newFish
-}
-
-data class Lanternfish(val timer: Int = 8, val new: Boolean = false) {
-    fun tick(): Lanternfish {
-        val newTimer = if (timer == 0) 6 else timer - 1
-        val isNew = if(timer == 0) false else new
-        return copy(timer = newTimer, new = isNew)
-    }
+    return fish.sum()
 }
