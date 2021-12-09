@@ -101,6 +101,7 @@ private fun List<List<Int>>.validSurroundingPoints(coOrdinate: Point): List<Poin
 }
 
 fun List<List<Int>>.basin(coOrdinate: Point): List<Point> {
+    val boundaryHeight = 9
     val foundPoints = mutableSetOf(coOrdinate)
     var currentPoints = listOf(coOrdinate)
 
@@ -110,17 +111,13 @@ fun List<List<Int>>.basin(coOrdinate: Point): List<Point> {
             .map { this.validSurroundingPoints(it) }
             .flatten()
             .filter { !foundPoints.contains(it) }
-            .filter { this[it.y][it.x] != 9 }
+            .filter { this[it.y][it.x] != boundaryHeight }
 
-        // can check at this point for any new points and if 0 return
-
-        val currentSize = foundPoints.size
-        foundPoints.addAll(newPoints)
-
-        if (currentSize == foundPoints.size) {
+        if (newPoints.isEmpty()) {
             return foundPoints.toList()
         }
 
+        foundPoints.addAll(newPoints)
         currentPoints = newPoints
     }
 }
