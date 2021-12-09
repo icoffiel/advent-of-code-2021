@@ -11,7 +11,7 @@ class Day08 : Day {
         val input = getInput("Day08.txt")
         val sanitizedInput = input.map { it.trim() }
 
-        println("Results for Day Seven:")
+        println("Results for Day Eight:")
         println("Part One: ${partOne(sanitizedInput)}")
         println("Part Two: ${partTwo(sanitizedInput)}")
     }
