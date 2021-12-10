@@ -31,8 +31,7 @@ class Day10 : Day {
     private fun partTwo(sanitizedInput: List<String>): Long {
         val incompleteStrings = sanitizedInput
             .filter { it.isNotCorrupted() }
-            .map { it.incomplete() }
-
+            .map { it.incompleteBrackets() }
 
         val scores = incompleteStrings
             .map { it.score() }
@@ -57,29 +56,29 @@ fun String.isNotCorrupted(): Boolean = !this.isCorrupted()
 fun String.isCorrupted(): Boolean = this.corruptedBracket() != null
 
 fun String.corruptedBracket(): String? {
-    val stack = Stack<String>()
-
-    this.asSequence()
+    this
+        .asSequence()
         .map { it.toString() }
-        .forEach { char ->
+        .fold(Stack<String>()) { stack, char ->
             if (char.isOpeningBracket()) {
-                stack.push(char)
+                stack.also { it.push(char) }
             } else {
                 val possibleMatchingBracket = stack.pop()
                 if (possibleMatchingBracket to char !in mapOfBrackets) {
                     return char
                 }
+                stack
             }
         }
 
     return null
 }
 
-fun String.incomplete(): List<String> {
+fun String.incompleteBrackets(): List<String> {
     val unclosedChars = this
         .toList()
         .map { it.toString() }
-        .fold(Stack<String>()) {stack, char ->
+        .fold(Stack<String>()) { stack, char ->
             if (char.isOpeningBracket()) {
                 stack.also { it.push(char) }
             } else {
@@ -92,13 +91,13 @@ fun String.incomplete(): List<String> {
         .reversed()
 }
 
-fun List<String>.score(): Long {
-    return this.fold(0L){acc, char ->
-        acc * 5 + incompleteBracketScoring.getValue(char)
-    }
-}
+fun List<String>.score(): Long =
+    this
+        .fold(0L) { acc, char ->
+            acc * 5 + incompleteBracketScoring.getValue(char)
+        }
 
-operator fun <R,S> Map<R, S>.contains(pair: Pair<R, S>): Boolean {
+operator fun <R, S> Map<R, S>.contains(pair: Pair<R, S>): Boolean {
     return this[pair.first] == pair.second
 }
 
