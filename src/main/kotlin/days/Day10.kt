@@ -1,6 +1,6 @@
 package days
 
-import util.FileUtil.getInput
+import util.FileUtils.getInput
 import java.util.*
 
 fun main() {

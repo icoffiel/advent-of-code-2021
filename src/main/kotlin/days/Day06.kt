@@ -1,6 +1,6 @@
 package days
 
-import util.FileUtil.getInputString
+import util.FileUtils.getInputString
 
 fun main() {
     Day06().run()

@@ -1,7 +1,10 @@
 package days
 
-import util.FileUtil.getInput
-import java.awt.Point
+import util.FileUtils.getInput
+import util.GridUtils.get
+import util.GridUtils.basin
+import util.GridUtils.lowPoints
+import util.StringUtils.toIntList
 
 fun main() {
     Day09().run()
@@ -21,18 +24,9 @@ class Day09 : Day {
         val cave = sanitizedInput.map { it.toIntList() }
 
         val lowPointValues =
-            cave.indices
-                .flatMap { y ->
-                    cave[0].indices
-                        .mapNotNull { x ->
-                            val pointToCheck = Point(x, y)
-                            if (cave.isLowPoint(pointToCheck)) {
-                                cave[pointToCheck]
-                            } else {
-                                null
-                            }
-                        }
-                }
+            cave
+                .lowPoints()
+                .map { cave[it] }
 
         return lowPointValues.sumOf { it + 1 }
     }
@@ -40,21 +34,10 @@ class Day09 : Day {
     private fun partTwo(sanitizedInput: List<String>): Int {
         val cave = sanitizedInput.map { it.toIntList() }
 
-        val lowPointCoordinates =
-            cave.indices
-                .flatMap { y ->
-                    cave[0].indices
-                        .mapNotNull { x ->
-                            val pointToCheck = Point(x, y)
-                            if (cave.isLowPoint(pointToCheck)) {
-                                pointToCheck
-                            } else {
-                                null
-                            }
-                        }
-                }
-
-        val basins = lowPointCoordinates.map { cave.basin(it) }
+        val basins =
+            cave
+                .lowPoints()
+                .map { cave.basin(it) }
 
         return basins
             .map { it.size }
@@ -64,55 +47,3 @@ class Day09 : Day {
     }
 }
 
-fun String.toIntList(): List<Int> =
-    this
-        .toList()
-        .map { Character.getNumericValue(it) }
-
-fun List<List<Int>>.isLowPoint(coOrdinate: Point): Boolean {
-    return validSurroundingPoints(coOrdinate)
-        .map { this[it] }
-        .none { it <= this[coOrdinate] }
-}
-
-private fun List<List<Int>>.validSurroundingPoints(coOrdinate: Point): List<Point> {
-    return coOrdinate
-        .neighbours()
-        .filter { it in this }
-}
-
-operator fun List<List<Int>>.contains(point: Point): Boolean =
-    point.y in this.indices && point.x in this[point.y].indices
-
-operator fun List<List<Int>>.get(point: Point): Int = this[point.y][point.x]
-
-fun Point.neighbours(): List<Point> {
-    return listOf(
-        Point(this.x - 1, this.y),
-        Point(this.x + 1, this.y),
-        Point(this.x, this.y - 1),
-        Point(this.x, this.y + 1),
-    )
-}
-
-fun List<List<Int>>.basin(coOrdinate: Point): List<Point> {
-    val boundaryHeight = 9
-    val foundPoints = mutableSetOf(coOrdinate)
-    var currentPoints = listOf(coOrdinate)
-
-    while (true) {
-
-        val newPoints = currentPoints
-            .map { this.validSurroundingPoints(it) }
-            .flatten()
-            .filter { !foundPoints.contains(it) }
-            .filter { this[it] != boundaryHeight }
-
-        if (newPoints.isEmpty()) {
-            return foundPoints.toList()
-        }
-
-        foundPoints.addAll(newPoints)
-        currentPoints = newPoints
-    }
-}

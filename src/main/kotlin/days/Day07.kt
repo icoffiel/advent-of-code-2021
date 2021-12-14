@@ -1,6 +1,6 @@
 package days
 
-import util.FileUtil.getInputString
+import util.FileUtils.getInputString
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import kotlin.math.absoluteValue

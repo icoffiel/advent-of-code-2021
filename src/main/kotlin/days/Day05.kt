@@ -1,8 +1,8 @@
 package days
 
-import util.FileUtil.getInput
-import java.awt.Point
-import java.lang.IllegalArgumentException
+import util.FileUtils.getInput
+import util.Line
+import util.StringUtils.toPoint
 
 fun main() {
     Day05().run()
@@ -38,7 +38,7 @@ class Day05 : Day {
         }
 
         lines
-            .filter { it.onlyHorizontalAndVertical() }
+            .filter { it.horizontalAndVerticalOnly() }
             .flatMap { it.toIndividualPoints() }
             .forEach { diagram[it.y][it.x]++ }
 
@@ -67,49 +67,4 @@ fun Array<Array<Int>>.printMatrix() {
         it.forEach { elem -> if (elem == 0) System.out.format("%2s", ".") else System.out.format("%2s", elem) }
         println()
     }
-}
-
-data class Line(val start: Point, val end: Point) {
-    fun toIndividualPointsHorizontalVertical(): List<Point> {
-        return if (start.x != end.x) {
-            val xPoints = listOf(start.x, end.x)
-            val min = xPoints.minOrNull() ?: throw IllegalArgumentException()
-            val max = xPoints.maxOrNull() ?: throw IllegalArgumentException()
-            (min..max).map { diff -> Point(diff, start.y) }
-        } else {
-            val yPoints = listOf(start.y, end.y)
-            val min = yPoints.minOrNull() ?: throw IllegalArgumentException()
-            val max = yPoints.maxOrNull() ?: throw IllegalArgumentException()
-            (min..max).map { diff -> Point(start.x, diff) }
-        }
-    }
-
-    fun toIndividualPointsIncDiagonal(): List<Point> {
-        val xCoords = (start.x toward end.x).map { it }
-        val yCoords = (start.y toward end.y).map { it }
-
-        return xCoords
-            .zip(yCoords)
-            .map { (x, y) -> Point(x, y) }
-    }
-
-    fun toIndividualPoints(): List<Point> {
-        return if (start.x != end.x && start.y != end.y) {
-            toIndividualPointsIncDiagonal()
-        } else {
-            toIndividualPointsHorizontalVertical()
-        }
-    }
-
-    fun onlyHorizontalAndVertical() = start.x == end.x || start.y == end.y
-}
-
-fun String.toPoint(): Point {
-    val (one, two) = this.split(",")
-    return Point(one.toInt(), two.toInt())
-}
-
-private infix fun Int.toward(to: Int): IntProgression {
-    val step = if (this > to) -1 else 1
-    return IntProgression.fromClosedRange(this, to, step)
 }
