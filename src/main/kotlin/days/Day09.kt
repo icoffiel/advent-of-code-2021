@@ -4,6 +4,7 @@ import util.FileUtils.getInput
 import util.GridUtils.get
 import util.GridUtils.basin
 import util.GridUtils.lowPoints
+import util.ListUtils.toIntGrid
 import util.StringUtils.toIntList
 
 fun main() {
@@ -21,7 +22,7 @@ class Day09 : Day {
     }
 
     private fun partOne(sanitizedInput: List<String>): Int {
-        val cave = sanitizedInput.map { it.toIntList() }
+        val cave = sanitizedInput.toIntGrid()
 
         val lowPointValues =
             cave

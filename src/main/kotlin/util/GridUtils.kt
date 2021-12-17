@@ -46,9 +46,9 @@ object GridUtils {
         }
     }
 
-    private fun <E> List<List<E>>.neighbours(coOrdinate: Point): List<Point> {
+    fun <E> List<List<E>>.neighbours(coOrdinate: Point, includeDiagonals: Boolean = false): List<Point> {
         return coOrdinate
-            .neighbours()
+            .neighbours(includeDiagonals)
             .filter { it in this }
     }
 
